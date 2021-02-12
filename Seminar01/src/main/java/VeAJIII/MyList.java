@@ -124,7 +124,7 @@ public class MyList {
    * Searches for element in the list to return element right next after it.
    * 
    * @param elm - element to search
-   * @return element right after element; {INT MIN}: if elm not found
+   * @return element right after element
    * @throws IllegalArgumentException if element was not found
    */
   public int getNextAfter(int elm) throws IllegalArgumentException {
