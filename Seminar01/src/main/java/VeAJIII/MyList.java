@@ -25,7 +25,7 @@ public class MyList {
 
   private boolean widen() {
     long newLength = (long)(elements.length * ((elm_counter < 100) ? 2 : 1.5));
-    
+
     if (newLength > Integer.MAX_VALUE) {
       int remaining = Integer.MAX_VALUE - elements.length;
 
@@ -34,7 +34,7 @@ public class MyList {
       } else {
         newLength = elements.length + remaining;
       }
-    }
+    } else if (newLength == 0) newLength = 1;
 
     int[] temp = new int[(int)(newLength)];
     System.arraycopy(elements, 0, temp, 0, elements.length);
@@ -54,7 +54,7 @@ public class MyList {
   public boolean add(int elm) throws IndexOutOfBoundsException {
     if (isFull() && !widen()) throw new IndexOutOfBoundsException("List reached MAX_INT length.");
 
-    elements[++elm_counter] = elm;
+    elements[elm_counter++] = elm;
     return true;
   }
 
@@ -115,7 +115,8 @@ public class MyList {
    */
   public int seekElement(int elm) throws IllegalArgumentException {
     for (int i = 0; i < elm_counter; i++) {
-      if (elements[elm_counter] == elm) return i;
+      if (elements[i] == elm) 
+        return i;
     }
 
     throw new IllegalArgumentException("elm = " + elm + " not found in the list");
@@ -126,15 +127,20 @@ public class MyList {
    * 
    * @param elm - element to search
    * @return element right after element; {INT MIN}: if elm not found
+   * @throws IllegalArgumentException if element was not found
    */
-  public int getNextAfter(int elm) {
+  public int getNextAfter(int elm) throws IllegalArgumentException {
     int idx;
     
     try {
       idx = seekElement(elm);
     } catch (IllegalArgumentException e) { throw e; }    
 
-    return elements[idx + 1];
+    if (idx < elm_counter - 1) {
+      return elements[idx + 1];
+    } else {
+      throw new IllegalArgumentException("elm = " + elm + " is last in the list");
+    }
   }
 
   /**
@@ -159,12 +165,12 @@ public class MyList {
    * Prints list contents in terminal
    */
   public void print() {
-    System.out.printf("\nMyList(elmCount = %d, allocLength = %d)\n\t{", 
+    System.out.printf("\nMyList(elmCount = %d, allocLength = %d) {\n\t", 
         elm_counter, elements.length);
 
-    for (int i = 0; i <= elm_counter; i++) {
+    for (int i = 0; i < elm_counter; i++) {
       System.out.print(elements[i]);
-      if (i != elm_counter) System.out.print(", ");
+      if (i < elm_counter - 1) System.out.print(", ");
     }
 
     System.out.print("\n}\n");
