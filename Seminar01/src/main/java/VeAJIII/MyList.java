@@ -1,7 +1,5 @@
 package VeAJIII;
 
-import java.util.ArrayList;
-
 public class MyList {
   private static int elm_counter = 0;
   private int[] elements;

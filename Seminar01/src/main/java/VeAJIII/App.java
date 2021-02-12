@@ -100,5 +100,10 @@ public class App {
     System.out.println("\n========================== sort(false) method ==========================\n\t sort list in ascending order");
     list.sort(false);
     list.print();
+
+
+    System.out.println("\n========================== free() method ==========================\n\t free list");
+    list.free();
+    list.print();
   }
 }
