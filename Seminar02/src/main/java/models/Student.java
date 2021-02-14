@@ -1,7 +1,10 @@
 package models;
 
+import java.util.ArrayList;
+
 /**
- * No gender checks as required in the task - Latvia is not the only country in the world
+ * No gender checks as required in the task - Latvia is not the only country in
+ * the world
  */
 public class Student implements Comparable<Student> {
   private static long id_counter = 0;
@@ -14,7 +17,7 @@ public class Student implements Comparable<Student> {
   public Gender gender;
   private String name;
   private String surname;
-  private byte[] grades;
+  private ArrayList<Byte> grades;
 
 
   /**
@@ -29,6 +32,7 @@ public class Student implements Comparable<Student> {
       setName("Name");
       setSurname("surname");
       gender = Gender.DEFAULT;
+      grades = new ArrayList<Byte>();
     } catch (Exception e) {
       throw new Exception(e + "; new Student instance was not created!");
     }
@@ -49,6 +53,7 @@ public class Student implements Comparable<Student> {
       setName(name);
       setSurname(surname);
       this.gender = gender;
+      grades = new ArrayList<Byte>();
     } catch (Exception e) {
       throw new Exception(e + "; new Student instance was not created!");
     }
@@ -64,7 +69,7 @@ public class Student implements Comparable<Student> {
       result += grade;
     }
 
-    return (float)result / (float)grades.length;
+    return (float)result / (float)grades.size();
   }
 
   /**
@@ -83,12 +88,12 @@ public class Student implements Comparable<Student> {
    */
   public String toString() {
     return 
-      "\tId: " + id + 
+      "{\n\tId: " + id + 
       "\n\tName: " + name + 
       "\n\tSurname: " + surname + 
       "\n\tGender: " + gender.toString() +
       String.format("\n\tMean grade: %.1f", getMeanGrade()) +
-      "\n";
+      "\n}\n";
   }
 
   /**
@@ -120,7 +125,7 @@ public class Student implements Comparable<Student> {
    * @throws IllegalArgumentException
    */
   public void setName(String name) throws IllegalArgumentException {
-    if (!name.matches("[\\p{L}]")) {
+    if (!name.matches("[A-Za-z]+")) {
       throw new IllegalArgumentException(name+ " has invalid symbols");
     }
 
@@ -139,10 +144,8 @@ public class Student implements Comparable<Student> {
    * @throws IllegalArgumentException
    */
   public void setSurname(String surname) throws IllegalArgumentException {
-    try { 
-      setName(surname); 
-    } catch (Exception e) { 
-      throw e; 
+    if (!name.matches("[A-Za-z]+")) {
+      throw new IllegalArgumentException(surname+ " has invalid symbols");
     }
 
     this.surname = surname;
@@ -158,5 +161,5 @@ public class Student implements Comparable<Student> {
    * 
    * @return grade array
    */
-  public byte[] getGrades() { return grades; }
+  public ArrayList<Byte> getGrades() { return grades; }
 }

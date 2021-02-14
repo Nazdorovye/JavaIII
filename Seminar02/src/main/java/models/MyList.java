@@ -210,7 +210,7 @@ public class MyList<T> {
    * Prints list contents in terminal
    */
   public void print() {
-    System.out.printf("\nMyList(elmCount = %d, allocLength = %d) {\n\t", 
+    System.out.printf("\nMyList(elmCount = %d, allocLength = %d) {\n", 
         elm_counter, elements.length);
 
     for (int i = 0; i < elm_counter; i++) {

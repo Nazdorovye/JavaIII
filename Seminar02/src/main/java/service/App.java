@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import models.MyInteger;
 import models.MyList;
+import models.Student;
+import models.Student.Gender;
 
 public class App {
   public static void main( String[] args ) {
@@ -108,5 +110,19 @@ public class App {
     System.out.println("\n========================== free() method ==========================\n\t free list");
     list.free();
     list.print();
+    System.out.print("\n\n\n");
+
+
+
+
+    System.out.println("\n========================== Students ==========================\n\t new student list");
+    MyList<Student> studs = new MyList<Student>(Student.class, 3);
+    
+    try { studs.add(new Student("Gallochka", "Tishasumresh", Gender.FEMALE)); }catch(Exception e){}
+    try { studs.add(new Student("Leeroy", "Jenkins", Gender.MALE)); }catch(Exception e){}
+    try { studs.add(new Student("Allah", "Allhovich", Gender.MALE)); }catch(Exception e){}
+    try { studs.add(new Student("wer 23", "(*#4)", Gender.DEFAULT)); }catch(Exception e){}
+
+    studs.print();
   }
 }
