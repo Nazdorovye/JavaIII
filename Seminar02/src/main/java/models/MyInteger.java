@@ -32,6 +32,13 @@ public class MyInteger extends Number implements Comparable<MyInteger> {
     return value - another.value;
   }
 
+  /**
+   * 
+   */
+  public String toString() {
+    return Integer.toString(value);
+  }
+
   public float floatValue() { return (float)value; }
   public long longValue() { return (long)value; }
   public int intValue() { return (int)value; }

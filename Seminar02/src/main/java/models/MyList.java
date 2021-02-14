@@ -102,7 +102,7 @@ public class MyList<T> {
    * @throws IndexOutOfBoundsException
    */
   public boolean delAtIdx(int idx) throws IndexOutOfBoundsException {
-    if (idx > elm_counter || idx < 0) throw new IndexOutOfBoundsException(idx);
+    if (idx >= elm_counter || idx < 0) throw new IndexOutOfBoundsException(idx);
 
     for (int i = idx; i < elm_counter;) {
       elements[i] = elements[++i];
@@ -170,7 +170,7 @@ public class MyList<T> {
    */
   @SuppressWarnings("unchecked")
   public void sort(boolean descending) {    
-    if (elm_class.isAssignableFrom(Comparable.class)) {
+    if (Comparable.class.isAssignableFrom(elm_class)) {
 
       for (int i = 0; i < elm_counter; i++) {
         for (int j = i + 1; j < elm_counter; j++) {
