@@ -1,7 +1,9 @@
-package VeAJIII;
+package service;
 
 import java.io.File;
 import java.util.Scanner;
+
+import models.MyList;
 
 public class App {
   public static void main( String[] args ) {

@@ -1,4 +1,4 @@
-package VeAJIII;
+package models;
 
 public class MyList {
   private static int elm_counter = 0;
