@@ -1,26 +1,47 @@
 package models;
 
-public class MyList {
+import java.lang.reflect.Array;
+
+public class MyList<T> {
+  private final Class<T> elm_class;
   private static int elm_counter = 0;
-  private int[] elements;
+  private T[] elements;
   private final int defaultLength;
 
-  public MyList() {
-    elements = new int[0];
+  /**
+   * Initializes with list length 0
+   * 
+   * @param element_class - elements' generic class
+   * @apiNote suppressed unchecked cast warning
+   */
+  @SuppressWarnings("unchecked")
+  public MyList(Class<T> element_class) {
     defaultLength = 0;
+    elm_class = element_class;
+    elements = (T[]) Array.newInstance(elm_class, defaultLength); // unchecked cast
   }
 
-  public MyList(int listSize) throws IndexOutOfBoundsException {
+  /**
+   * 
+   * @param element_class - elements' generic class
+   * @param listSize - list length
+   * @throws IndexOutOfBoundsException - when listSize < 0
+   * @apiNote suppressed unchecked cast warning
+   */
+  @SuppressWarnings("unchecked")
+  public MyList(Class<T> element_class, int listSize) throws IndexOutOfBoundsException {
     if (listSize < 0) throw new IndexOutOfBoundsException(listSize);
 
-    elements = new int[listSize];
     defaultLength = listSize;
+    elm_class = element_class;
+    elements = (T[]) Array.newInstance(elm_class, listSize); // unchecked cast
   }
 
   public boolean isFull() { return elm_counter == elements.length; }
   public boolean isEmpty() { return elm_counter == 0; }
   public long elmCount() { return elm_counter; }
 
+  @SuppressWarnings("unchecked")
   private boolean widen() {
     long newLength = (long)(elements.length * ((elm_counter < 100) ? 2 : 1.5));
 
@@ -34,7 +55,7 @@ public class MyList {
       }
     } else if (newLength == 0) newLength = 1;
 
-    int[] temp = new int[(int)(newLength)];
+    T[] temp = (T[]) Array.newInstance(elm_class, (int)newLength);
     System.arraycopy(elements, 0, temp, 0, elements.length);
 
     elements = temp;    
@@ -49,7 +70,7 @@ public class MyList {
    * @return true on success.
    * @throws IndexOutOfBoundsException
    */
-  public boolean add(int elm) throws IndexOutOfBoundsException {
+  public boolean add(T elm) throws IndexOutOfBoundsException {
     if (isFull() && !widen()) throw new IndexOutOfBoundsException("List reached MAX_INT length.");
 
     elements[elm_counter++] = elm;
@@ -65,7 +86,7 @@ public class MyList {
    * @return true on success
    * @throws IndexOutOfBoundsException
    */
-  public boolean setAtIdx(int idx, int elm) throws IndexOutOfBoundsException {
+  public boolean setAtIdx(int idx, T elm) throws IndexOutOfBoundsException {
     if (idx > elm_counter || idx < 0) throw new IndexOutOfBoundsException(idx);
 
     elements[idx] = elm;
@@ -98,7 +119,7 @@ public class MyList {
    * @return element
    * @throws IndexOutOfBoundsException
    */
-  public int atIdx(int idx) throws IndexOutOfBoundsException {
+  public T atIdx(int idx) throws IndexOutOfBoundsException {
     if (idx > elm_counter || idx < 0) throw new IndexOutOfBoundsException(idx);
 
     return elements[idx];
@@ -111,13 +132,13 @@ public class MyList {
    * @return index if element found in the list
    * @throws IllegalArgumentException if element was not found
    */
-  public int seekElement(int elm) throws IllegalArgumentException {
+  public int seekElement(T elm) throws IllegalArgumentException {
     for (int i = 0; i < elm_counter; i++) {
-      if (elements[i] == elm) 
+      if (elements[i].equals(elm)) 
         return i;
     }
 
-    throw new IllegalArgumentException("elm = " + elm + " not found in the list");
+    throw new IllegalArgumentException("elm = " + elm.toString() + " not found in the list");
   }
 
   /**
@@ -127,7 +148,7 @@ public class MyList {
    * @return element right after element
    * @throws IllegalArgumentException if element was not found
    */
-  public int getNextAfter(int elm) throws IllegalArgumentException {
+  public T getNextAfter(T elm) throws IllegalArgumentException {
     int idx;
     
     try {
@@ -146,18 +167,19 @@ public class MyList {
    * 
    * @param descending - sets if to sort in descending order
    */
-  public void sort(boolean descending) {    
-    for (int i = 0; i < elm_counter; i++) {
-      for (int j = i + 1; j < elm_counter; j++) {
-        if (   (elements[j] > elements[i] && descending)
-            || (elements[j] < elements[i] && !descending) ) {
-          int temp = elements[i];
-          elements[i] = elements[j];
-          elements[j] = temp;
-        }
-      }
-    }
-  }
+  // TODO: 
+  // public void sort(boolean descending) {    
+  //   for (int i = 0; i < elm_counter; i++) {
+  //     for (int j = i + 1; j < elm_counter; j++) {
+  //       if (   (elements[j] > elements[i] && descending)
+  //           || (elements[j] < elements[i] && !descending) ) {
+  //         int temp = elements[i];
+  //         elements[i] = elements[j];
+  //         elements[j] = temp;
+  //       }
+  //     }
+  //   }
+  // }
 
   /**
    * Prints list contents in terminal
@@ -167,7 +189,7 @@ public class MyList {
         elm_counter, elements.length);
 
     for (int i = 0; i < elm_counter; i++) {
-      System.out.print(elements[i]);
+      System.out.print(elements[i].toString());
       if (i < elm_counter - 1) System.out.print(", ");
     }
 
@@ -176,9 +198,11 @@ public class MyList {
 
   /**
    * Empties list
+   * @apiNote suppressed unchecked cast warning
    */
+  @SuppressWarnings("unchecked")
   public void free() {
     elm_counter = 0;
-    elements = new int[defaultLength];
+    elements = (T[]) Array.newInstance(elm_class, defaultLength);
   }
 }

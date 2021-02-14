@@ -91,6 +91,19 @@ public class Student {
       "\n";
   }
 
+  /**
+   * 
+   */
+  public boolean equals(Object obj) {
+    if (!obj.getClass().equals(this.getClass())) return false;
+    Student temp = Student.class.cast(obj);
+
+    if(temp.id != id) return false;
+    if(!temp.name.equals(name)) return false;
+    if(!temp.surname.equals(surname)) return false;
+
+    return true;
+  }
 
   /* ======== GETTERS / SETTERS =========================================================== */
   /**
