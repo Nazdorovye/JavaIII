@@ -3,8 +3,24 @@ package models;
 public class MyInteger extends Number {
   public int value;
 
+  /**
+   * 
+   * @param value
+   */
   public MyInteger(int value) {
     this.value = value;
+  }
+
+  /**
+   * 
+   */
+  public boolean equals(Object obj) {
+    if (!obj.getClass().equals(MyInteger.class)) return false;
+    MyInteger temp = MyInteger.class.cast(obj);
+
+    if (temp.value != value) return false;
+
+    return true;
   }
 
   public float floatValue() { return (float)value; }
