@@ -166,20 +166,45 @@ public class MyList<T> {
    * Sorts list in ascending or descending order ( Bubble sort algo )
    * 
    * @param descending - sets if to sort in descending order
+   * @apiNote suppressed unchecked cast warning
    */
-  // TODO: 
-  // public void sort(boolean descending) {    
-  //   for (int i = 0; i < elm_counter; i++) {
-  //     for (int j = i + 1; j < elm_counter; j++) {
-  //       if (   (elements[j] > elements[i] && descending)
-  //           || (elements[j] < elements[i] && !descending) ) {
-  //         int temp = elements[i];
-  //         elements[i] = elements[j];
-  //         elements[j] = temp;
-  //       }
-  //     }
-  //   }
-  // }
+  @SuppressWarnings("unchecked")
+  public void sort(boolean descending) {    
+    if (elm_class.isAssignableFrom(Comparable.class)) {
+
+      for (int i = 0; i < elm_counter; i++) {
+        for (int j = i + 1; j < elm_counter; j++) {
+          if (
+            (
+              (((Comparable<T>)elements[j]).compareTo((T)elements[i])) > 0 
+              && descending
+            ) || (
+              (((Comparable<T>)elements[j]).compareTo((T)elements[i])) < 0 
+              && !descending
+            )) {
+
+            T temp = elements[i];
+            elements[i] = elements[j];
+            elements[j] = temp;
+          }
+        }
+      }
+
+    } else {
+
+      for (int i = 0; i < elm_counter; i++) {
+        for (int j = i + 1; j < elm_counter; j++) {
+          if (   (elements[j].hashCode() > elements[i].hashCode() && descending)
+              || (elements[j].hashCode() < elements[i].hashCode() && !descending)) {
+            T temp = elements[i];
+            elements[i] = elements[j];
+            elements[j] = temp;
+          }
+        }
+      }
+
+    }
+  }
 
   /**
    * Prints list contents in terminal

@@ -3,7 +3,7 @@ package models;
 /**
  * No gender checks as required in the task - Latvia is not the only country in the world
  */
-public class Student {
+public class Student implements Comparable<Student> {
   private static long id_counter = 0;
 
   public enum Gender {
@@ -103,6 +103,14 @@ public class Student {
     if(!temp.surname.equals(surname)) return false;
 
     return true;
+  }
+
+  public int compareTo(Student another) {
+    float compRes = getMeanGrade() - another.getMeanGrade();
+
+    return (compRes > -1.0 && compRes < 1.0) ? (
+        (compRes < 0) ? -1 : (compRes > 0) ? 1 : 0
+      ) : (int)compRes;
   }
 
   /* ======== GETTERS / SETTERS =========================================================== */

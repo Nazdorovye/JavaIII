@@ -1,6 +1,6 @@
 package models;
 
-public class MyInteger extends Number {
+public class MyInteger extends Number implements Comparable<MyInteger> {
   public int value;
 
   /**
@@ -21,6 +21,15 @@ public class MyInteger extends Number {
     if (temp.value != value) return false;
 
     return true;
+  }
+
+  /**
+   * 
+   * @param another
+   * @return pos if this > another; neg if this < another; 0 if this == another
+   */
+  public int compareTo(MyInteger another) {
+    return value - another.value;
   }
 
   public float floatValue() { return (float)value; }
