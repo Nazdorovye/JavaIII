@@ -1,3 +1,0 @@
-module Seminar01 {
-  
-}
