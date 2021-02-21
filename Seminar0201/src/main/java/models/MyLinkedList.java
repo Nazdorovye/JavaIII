@@ -1,11 +1,20 @@
 package models;
 
 public class MyLinkedList<T> {
+  private final Class<T> type;
   private long elmCounter = 0;
   private MyNode<T> first = null;
   private MyNode<T> last = null;
 
-  public MyLinkedList() {}
+  public enum SortOrder { ASCENDING, DESCENDING; }
+
+  public MyLinkedList(Class<T> type) {
+    this.type = type;
+  }
+
+
+  public MyNode<T> getFirst() { return first; }
+  public MyNode<T> getLast() { return last; }
 
 
   /**
@@ -157,6 +166,8 @@ public class MyLinkedList<T> {
       if (tempCur.prev != null) {
         tempCur.prev.next = cur;
         cur.prev = tempCur.prev;
+      } else {
+        first = cur;
       }
 
       tempCur.prev = cur;
@@ -215,10 +226,130 @@ public class MyLinkedList<T> {
     try {
       return nodeOf(value).next.value;
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      // System.out.println(e.getMessage());
       return null;
     }
   }
 
 
+  /**
+   * Merges {@code right} and {@code left} linked lists in given order
+   * 
+   * @param left - head of first linked list
+   * @param right - head of second linked list
+   * @param so - sorting order
+   * @return {@code MyNode<T>} object - the head of merged linked list
+   * @apiNote suppressed unchecked cast warning
+   */
+  @SuppressWarnings("unchecked")
+  private MyNode<T> ms_merge(MyNode<T> left, MyNode<T> right, SortOrder so) {    
+    if (left == null) return right;
+    if (right == null) return left;
+
+    if (
+        ((Comparable<T>)left.value).compareTo((T)right.value) <= 0 
+        && so.equals(SortOrder.ASCENDING)) {
+      left.next = ms_merge(left.next, right, so);
+      left.next.prev = left;
+      left.prev = null;
+
+      return left;
+    } else {
+      right.next = ms_merge(left, right.next, so);
+      right.next.prev = right;
+      right.prev = null;
+
+      return right;
+    }
+  }
+
+
+  /**
+   * Splits given linked list into two
+   * 
+   * @param head - head of linked list to be splitted
+   * @return {@code MyNode<T>} object - head of the right list
+   */
+  private MyNode<T> ms_split(MyNode<T> head) {
+    if (head == null) return head;
+
+    MyNode<T> singleStep = head, doubleStep = head;
+
+    while (singleStep.next != null 
+        && doubleStep.next != null && doubleStep.next.next != null) {
+      singleStep = singleStep.next;
+      doubleStep = doubleStep.next.next;
+    }
+
+    MyNode<T> result = singleStep.next;
+    singleStep.next = null;
+
+    return result;
+  }
+
+
+  /**
+   * Recursively splits and merges linked list in given sorting order. Effectively, the merge 
+   * sort algorithm.
+   * 
+   * @param left - head of linked list to be sorted
+   * @param so - sorting order
+   * @return {@code MyNpde<T>} object - head of sorted linked list
+   */
+  private MyNode<T> ms_recursive(MyNode<T> left, SortOrder so) {
+    if (left == null  || left.next == null) return left;
+
+    MyNode<T> right = ms_split(left);
+
+    left = ms_recursive(left, so);
+    right = ms_recursive(right, so);
+
+    return ms_merge(left, right, so);
+  }
+
+
+  /**
+   * Sorts the list in given order using merge sort algorithm,
+   * 
+   * @param so - sorting order
+   */
+  public void mergeSort(SortOrder so) {
+    first = ms_recursive(first, so);
+
+    try { 
+      last = nodeAtIdx(elmCounter - 1); 
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      last = null;
+    }
+  }
+
+
+  public String toString() {
+    String list = "";
+
+    for (MyNode<T> cur = first; cur != null; cur = cur.next) {
+      list += cur.value.toString() + "\n";
+    }
+
+    return "LinkedList {\n" + list + "\n}\n";
+  }
+
+
+  public void free() {
+    MyNode<T> temp = null;
+
+    for (MyNode<T> cur = first; cur != null;) {
+      temp = cur;
+
+      cur.prev = null;
+      cur.next = null;
+      cur.value = null;
+
+      cur = temp.next;
+    }
+
+    first = last = null;
+    elmCounter = 0;
+  }
 }
