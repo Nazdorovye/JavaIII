@@ -1,15 +1,13 @@
 package models;
 
 public class MyLinkedList<T> {
-  private final Class<T> type;
   private long elmCounter = 0;
   private MyNode<T> first = null;
   private MyNode<T> last = null;
 
   public enum SortOrder { ASCENDING, DESCENDING; }
 
-  public MyLinkedList(Class<T> type) {
-    this.type = type;
+  public MyLinkedList() {
   }
 
 

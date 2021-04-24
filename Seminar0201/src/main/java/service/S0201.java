@@ -23,7 +23,7 @@ public class S0201 {
   }
 
   public static void main( String[] args ) {
-    MyLinkedList<Student> studs = new MyLinkedList<>(Student.class);
+    MyLinkedList<Student> studs = new MyLinkedList<>();
 
     addStud(studs, "Gunnar", "Gunnarson", Gender.MALE);
     addStud(studs, "Gunnar", "Gunnarsonson", Gender.MALE);
