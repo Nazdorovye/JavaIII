@@ -24,6 +24,8 @@ public class S0401 {
     test.setEdge("Washington", "Atlanta", 600, true);
     test.setEdge("Houston", "Atlanta", 800, true);
 
-    System.out.print(test.toString());
+    System.out.print(test.toString() + "\n");
+    System.out.print(test.getVertsBreadthFirst().toString() + "\n");
+    System.out.print(test.getVertsDepthFirst().toString() + "\n");
   }
 }
