@@ -4,7 +4,7 @@ import models.Graph;
 
 public class S0401 {
   public static void main( String[] args ) {
-    Graph<String, Integer> test = new Graph<>();
+    Graph<String> test = new Graph<>();
 
     test.addVertice("Austin");
     test.addVertice("Atlanta");
@@ -27,5 +27,13 @@ public class S0401 {
     System.out.print(test.toString() + "\n");
     System.out.print(test.getVertsBreadthFirst().toString() + "\n");
     System.out.print(test.getVertsDepthFirst().toString() + "\n");
+
+    try {
+      System.out.print("Shortest path from Dallas to Atlanta " + test.getShortestPath("Dallas", "Atlanta") + "\n");
+      System.out.print("Shortest path from Austin to Washington " + test.getShortestPath("Austin", "Washington") + "\n");
+      System.out.print("Shortest path from Chicago to Houston " + test.getShortestPath("Chicago", "Houston") + "\n");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

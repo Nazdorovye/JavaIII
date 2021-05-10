@@ -2,13 +2,13 @@ package models;
 
 import java.util.ArrayList;
 
-public class Graph<V, L> {
+public class Graph<V> {
   private ArrayList<V> verts;
-  private ArrayList<ArrayList<L>> adj;
+  private ArrayList<ArrayList<Number>> adj;
 
   public Graph() {
     verts = new ArrayList<V>();
-    adj = new ArrayList<ArrayList<L>>();
+    adj = new ArrayList<ArrayList<Number>>();
   }
 
   /**
@@ -22,7 +22,7 @@ public class Graph<V, L> {
     }
 
     verts.add(vertice);
-    adj.add(new ArrayList<L>());
+    adj.add(new ArrayList<Number>());
 
     for (int i = 0; i < verts.size(); i++) {
       for (int j = adj.get(i).size(); j < verts.size(); j++) {
@@ -50,7 +50,7 @@ public class Graph<V, L> {
       adj.remove(idV);
 
       // remove matrix rows for vertice
-      for (ArrayList<L> r : adj) r.remove(idV);
+      for (ArrayList<Number> r : adj) r.remove(idV);
     } else {
       return false;
     }
@@ -62,11 +62,11 @@ public class Graph<V, L> {
    * Modifies edge between vertices
    * @param from - origin vertex
    * @param to - destination vertex
-   * @param weight - specific {@code L} type weight, {@code null} if none/remove
+   * @param weight - specific {@code Number} type weight, {@code null} if none/remove
    * @param bothSides - defines if edge flows both directions (undirected) or directed
    * @return {@code true} on success, {@code false} if {@code verts} or {@code adj} were null
    */
-  public boolean setEdge(V from, V to, L weight, boolean bothSides) {
+  public boolean setEdge(V from, V to, Number weight, boolean bothSides) {
     if (verts == null || adj == null) {
       return false;
     }
@@ -96,13 +96,32 @@ public class Graph<V, L> {
     }
 
     ArrayList<V> result = new ArrayList<>();
-    L weight = null;
 
     for (int i = 0; i < verts.size(); i++) {
-      weight = adj.get(idF).get(i);
-
-      if (weight != null) {
+      if (adj.get(idF).get(i) != null) {
         result.add(verts.get(i));
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Returns arraylist of neighbour vertex indices
+   * @param from - vertex, neighbours from which are needed
+   * @return {@code ArrayList<Integer>}
+   * @throws IndexOutOfBoundsException thrown if vertex {@code from} was not found in graph
+   */
+  public ArrayList<Integer> getNeighbours(int from) throws IndexOutOfBoundsException {
+    if (from < 0 || from > verts.size() - 1) {
+      throw new IndexOutOfBoundsException("Method argument { from }, to was not found in graph structure");
+    }
+
+    ArrayList<Integer> result = new ArrayList<>();
+
+    for (int i = 0; i < verts.size(); i++) {
+      if (adj.get(from).get(i) != null) {
+        result.add(i);
       }
     }
 
@@ -167,13 +186,118 @@ public class Graph<V, L> {
   }
 
   /**
+   * Returns filtered arraylist of graph vertices traversed in depth first order
+   * @param from
+   * @return {@code ArrayList<V>}
+   */
+  public ArrayList<V> getVertsDepthFirst(V from) {
+    ArrayList<V> result = new ArrayList<>();
+    boolean[] visited = new boolean[verts.size()];
+    
+    depthRecur(verts.indexOf(from), visited, result);
+
+    return result;
+  }
+
+  /**
+   * Add two weights
+   * @param a
+   * @param b
+   * @return {@code Number}
+   */
+  private static Number addWeights(Number a, Number b) {
+    if (a instanceof Integer && b instanceof Integer) {
+      return Integer.class.cast(a) + Integer.class.cast(b);
+    } 
+
+    //TODO: complete for all Number child classes
+
+    return null;
+  }
+
+  private static int compareWeights(Number a, Number b) {
+    if (a instanceof Integer && b instanceof Integer) {
+      return Integer.class.cast(a) - Integer.class.cast(b);
+    }
+
+    //TODO: complete for all Number child classes
+
+    return 0;
+  }
+
+  /**
+   * Returns shortest weighted path
+   * @param from
+   * @param to
+   * @return {@code Number}
+   * @throws IndexOutOfBoundsException if {@code from} or {@code to} vertices are not in the graph
+   */
+  public Number getShortestPath(V from, V to) throws IndexOutOfBoundsException {
+    int cur = verts.indexOf(from);
+    int dest = verts.indexOf(to);
+    
+    if (cur < 0 || dest < 0 || cur > verts.size() || dest > verts.size()) {
+      throw new IndexOutOfBoundsException();
+    }
+
+    int[] prevs = new int[verts.size()];
+    for (int i = 0; i < prevs.length; i++) { prevs[i] = -1; } // init to -1 ( no prev )
+
+    boolean[] visited = new boolean[verts.size()];
+    Number[] paths = new Number[verts.size()]; // indices parallel to unvisited indices
+    paths[cur] = 0;
+
+    Number shortest;
+    int shortestIdx;
+    ArrayList<Integer> neigh;
+    
+    // Iterate through all vertices starting with from vertex
+    for (int v = 0; v < verts.size(); v++) {
+      try { neigh = getNeighbours(cur); } 
+      catch (IndexOutOfBoundsException e) { throw e; }
+
+      visited[cur] = true;
+      shortest = Integer.MAX_VALUE;
+      shortestIdx = -1;
+
+      // Get shortest paths from start for each neighbour
+      for (Integer n : neigh) {
+        if (visited[n]) continue;
+        Number path = addWeights(adj.get(cur).get(n), paths[cur]);
+
+        if (compareWeights(shortest, path) > 0) {
+          shortest = path;
+          shortestIdx = n;
+        }
+
+        if (paths[n] == null || compareWeights(paths[n], path) > 0) {
+          paths[n] = path;
+          prevs[n] = cur;
+        }
+      }
+
+      if (shortestIdx < 0) {
+        for (int i = 0; i < visited.length; i++) {
+          if (visited[i]) continue;
+          cur = i;
+          break;
+        }
+      } else {
+        cur = shortestIdx;
+      }
+    }
+
+    return paths[dest];
+  }
+
+  /**
    * Returns weight from between specified vertices
    * @param from - origin vertex
    * @param to - destination vertex
-   * @return {@code L} type weight
+   * @return {@code Number} type weight
    * @throws Exception thrown if either vertex {@code from} or {@code to} were not found in graph
    */
-  public L getWeight(V from, V to) throws Exception {
+  public Number getWeight(V from, V to) throws Exception {
     int idF = verts.indexOf(from);
     int idT = verts.indexOf(to);
 
